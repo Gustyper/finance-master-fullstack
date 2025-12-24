@@ -40,6 +40,18 @@ function App() {
     }
   }
 
+  async function handleDeleteTransaction(id) {
+    try {
+      await api.delete(`/transactions/${id}`);
+      
+      // Atualiza a lista removendo o item deletado
+      // Filtramos o estado local para não precisar fazer um novo GET no banco
+      setTransactions(transactions.filter(t => t._id !== id));
+    } catch (error) {
+      alert('Erro ao deletar transação');
+    }
+  }
+
   return (
     <div>
       <h1>Gerenciador de Finanças</h1>
@@ -81,6 +93,16 @@ function App() {
           </li>
         ))}
       </ul>
+      <ul>
+      {transactions.map(t => (
+        <li key={t._id}>
+          {t.title} - R$ {t.amount} ({t.type})
+          <button onClick={() => handleDeleteTransaction(t._id)} style={{ marginLeft: '10px', color: 'red' }}>
+            Excluir
+          </button>
+        </li>
+      ))}
+    </ul>
     </div>
   );
 }
