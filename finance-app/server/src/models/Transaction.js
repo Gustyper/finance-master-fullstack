@@ -5,24 +5,36 @@ const mongoose = require('mongoose');
 const TransactionSchema = new mongoose.Schema({
   title: { 
     type: String, 
-    required: true // O banco rejeitará se não houver título
+    required: true
   },
   amount: { 
     type: Number, 
-    required: true // Valor numérico da transação
-  },
+    required: true 
+  }, 
   type: { 
     type: String, 
-    enum: ['income', 'expense'], // Valida se é apenas entrada ou saída
+    enum: ['income', 'expense', 'buy', 'sell'], 
     required: true 
   },
   category: { 
     type: String, 
     required: true 
   },
+  ticker: { 
+    type: String, 
+    uppercase: true // Para passar petr4 para PETR4 
+  },
+  quantity: { 
+    type: Number, 
+    default: 0 
+  },
+  unitPrice: { 
+    type: Number, 
+    default: 0 
+  },
   date: { 
     type: Date, 
-    default: Date.now // Se não enviarmos data, o Mongo usa a data atual
+    default: Date.now 
   }
 });
 

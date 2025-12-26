@@ -1,26 +1,12 @@
-import { useEffect, useState } from 'react';
-import api from './services/api';
+import { useFinance } from './contexts/FinanceContext'; // Importamos o acesso aos dados globais
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 
 function App() {
-  const [transactions, setTransactions] = useState([]);
+  // Pegamos tudo o que precisamos do "contexto global"
+  const { transactions, deleteTransaction, loadTransactions } = useFinance();
 
-  useEffect(() => {
-    loadTransactions();
-  }, []);
-
-  async function loadTransactions() {
-    const response = await api.get('/transactions');
-    setTransactions(response.data);
-  }
-
-  async function handleDelete(id) {
-    await api.delete(`/transactions/${id}`);
-    setTransactions(transactions.filter(t => t._id !== id));
-  }
-
-  // Calculando os valores totais
+  // Os cálculos continuam aqui, pois eles dependem da lista 'transactions' que veio do contexto
   const totalIncome = transactions
     .filter(t => t.type === 'income')
     .reduce((acc, t) => acc + t.amount, 0);
@@ -50,9 +36,9 @@ function App() {
         </div>
       </div>
 
-      <TransactionForm onTransactionAdded={loadTransactions} />
+      <TransactionForm /> 
       <hr />
-      <TransactionList transactions={transactions} onDelete={handleDelete} />
+      <TransactionList transactions={transactions} onDelete={deleteTransaction} />
     </div>
   );
 }
