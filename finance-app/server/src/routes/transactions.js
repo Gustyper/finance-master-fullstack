@@ -5,14 +5,17 @@ const Transaction = require('../models/Transaction'); // Importa o template de t
 // Rota que cria uma transação (POST)
 router.post('/', async (req, res) => {
   try {
-    const { title, amount, type, category } = req.body;
+    const { title, amount, type, category, ticker, quantity, unitPrice } = req.body;
     
     // Cria uma nova instância do modelo com os dados recebidos
     const newTransaction = new Transaction({
       title,
       amount,
       type,
-      category
+      category,
+      ticker,
+      quantity,
+      unitPrice
     });
 
     // Salva no MongoDB
