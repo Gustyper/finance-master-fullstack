@@ -15,31 +15,39 @@ function App() {
     : transactions;
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>Finanças Pro</h1>
+    <div className="container">
+      <header style={{ marginBottom: '2rem' }}>
+        <h1>Finanças Pro</h1>
+      </header>
       
-      {/* Cards de Resumo */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-        <div style={{ border: '1px solid #ccc', padding: '10px' }}>
-          <h4>Saldo Total</h4>
-          <p>R$ {summary.total.toFixed(2)}</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="card">
+          <small>Entradas</small>
+          <h2 style={{ color: 'var(--success)' }}>R$ {summary.income.toFixed(2)}</h2>
+        </div>
+        <div className="card">
+          <small>Saídas</small>
+          <h2 style={{ color: 'var(--danger)' }}>R$ {summary.expense.toFixed(2)}</h2>
+        </div>
+        <div className="card" style={{ background: 'var(--primary)', color: 'white' }}>
+          <small>Saldo Total</small>
+          <h2>R$ {summary.total.toFixed(2)}</h2>
         </div>
       </div>
 
-      {/* Navegação por Abas */}
-      <div style={{ marginBottom: '20px' }}>
-        <button onClick={() => setActiveTab('all')}>Todas</button>
-        <button onClick={() => setActiveTab('stocks')}>Ações / FIIs</button>
+      <div className="card">
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
+          <button className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`} onClick={() => setActiveTab('all')}>Geral</button>
+          <button className={`tab-btn ${activeTab === 'stocks' ? 'active' : ''}`} onClick={() => setActiveTab('stocks')}>Investimentos</button>
+        </div>
+        
+        <TransactionForm />
       </div>
 
-      <TransactionForm />
-      <hr />
-
-      <h3>{activeTab === 'all' ? 'Histórico Geral' : 'Meus Ativos'}</h3>
-      <TransactionList 
-        transactions={filteredTransactions} 
-        onDelete={deleteTransaction} 
-      />
+      <div className="card">
+        <h3>{activeTab === 'all' ? 'Histórico' : 'Meus Ativos'}</h3>
+        <TransactionList transactions={filteredTransactions} onDelete={deleteTransaction} />
+      </div>
     </div>
   );
 }
