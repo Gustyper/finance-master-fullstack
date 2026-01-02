@@ -1,44 +1,45 @@
-import { useFinance } from './contexts/FinanceContext'; // Importamos o acesso aos dados globais
+import { useState } from 'react';
+import { useFinance } from './contexts/FinanceContext';
+import { useSummary } from './hooks/useSummary';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 
 function App() {
-  // Pegamos tudo o que precisamos do "contexto global"
-  const { transactions, deleteTransaction, loadTransactions } = useFinance();
+  const { transactions, deleteTransaction } = useFinance();
+  const summary = useSummary();
+  const [activeTab, setActiveTab] = useState('all'); // 'all' ou 'stocks'
 
-  // Os cálculos continuam aqui, pois eles dependem da lista 'transactions' que veio do contexto
-  const totalIncome = transactions
-    .filter(t => t.type === 'income')
-    .reduce((acc, t) => acc + t.amount, 0);
-
-  const totalExpense = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((acc, t) => acc + t.amount, 0);
-
-  const balance = totalIncome - totalExpense;
+  // Filtra as transações baseada na aba ativa
+  const filteredTransactions = activeTab === 'stocks' 
+    ? transactions.filter(t => t.ticker) 
+    : transactions;
 
   return (
-    <div>
-      <h1>Gerenciador de Finanças</h1>
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>Finanças Pro</h1>
       
+      {/* Cards de Resumo */}
       <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-        <div>
-          <h3>Entradas</h3>
-          <p style={{ color: 'green' }}>R$ {totalIncome.toFixed(2)}</p>
-        </div>
-        <div>
-          <h3>Saídas</h3>
-          <p style={{ color: 'red' }}>R$ {totalExpense.toFixed(2)}</p>
-        </div>
-        <div>
-          <h3>Saldo Total</h3>
-          <p style={{ fontWeight: 'bold' }}>R$ {balance.toFixed(2)}</p>
+        <div style={{ border: '1px solid #ccc', padding: '10px' }}>
+          <h4>Saldo Total</h4>
+          <p>R$ {summary.total.toFixed(2)}</p>
         </div>
       </div>
 
-      <TransactionForm /> 
+      {/* Navegação por Abas */}
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={() => setActiveTab('all')}>Todas</button>
+        <button onClick={() => setActiveTab('stocks')}>Ações / FIIs</button>
+      </div>
+
+      <TransactionForm />
       <hr />
-      <TransactionList transactions={transactions} onDelete={deleteTransaction} />
+
+      <h3>{activeTab === 'all' ? 'Histórico Geral' : 'Meus Ativos'}</h3>
+      <TransactionList 
+        transactions={filteredTransactions} 
+        onDelete={deleteTransaction} 
+      />
     </div>
   );
 }
