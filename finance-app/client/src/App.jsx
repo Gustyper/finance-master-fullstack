@@ -3,6 +3,7 @@ import { useFinance } from './contexts/FinanceContext';
 import { useSummary } from './hooks/useSummary';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
+import FinanceChart from './components/FinanceChart';
 
 function App() {
   const { transactions, deleteTransaction } = useFinance();
@@ -33,6 +34,11 @@ function App() {
           <small>Saldo Total</small>
           <h2>R$ {summary.total.toFixed(2)}</h2>
         </div>
+      </div>
+
+      <div className="card">
+        <h3>Visão Geral (Receitas vs Despesas)</h3>
+        <FinanceChart />
       </div>
 
       <div className="card">
